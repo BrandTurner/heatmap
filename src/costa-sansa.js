@@ -52,13 +52,17 @@
             }
         };
 
+    function renderContacts(contacts) {
+        grid = new Slick.Grid("#myGrid",  contacts, columns, options);        
+    }
+
     function loadList(name) {        
         $.ajax({
             url: "/Contact/List/"+name,
             type: "GET",
             dataType: "json",
             success: function(data, textStatus, xhr) {
-                grid = new Slick.Grid("#myGrid",  data.contacts, columns, options);
+                renderContacts(data.contacts);
             },
             error: function(xhr, textStatus, errorThrown) {
                 console.log("Error: " + textStatus);
