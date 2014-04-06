@@ -14,6 +14,8 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				files: [
+					{src: 'bower_components/jquery/jquery.js',dest: 'dist/jquery.js',flatten: true,expand: false,filter: 'isFile'},
+					{src: 'bower_components/jquery-ui/ui/jquery-ui.js',dest: 'dist/jquery-ui.js',flatten: true,expand: false,filter: 'isFile'},
 					{src: 'bower_components/jquery.event.drag-drop/event.drag/jquery.event.drag.js',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'},
 					{src: 'bower_components/jquery.event.drag-drop/event.drop/jquery.event.drop.js',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'},
 					{src: 'bower_components/slickgrid/slick.core.js',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'},
@@ -24,33 +26,12 @@ module.exports = function(grunt) {
 			},
 			prod: {
 				files: [
-					{src: 'bower_components/jquery/jquery.min.js',dest: 'dist/jquery.js',flatten: true,expand: false,filter: 'isFile'},
 					{src: 'build/costa-sansa.min.js',dest: 'dist/costa-sansa.js',flatten: true,expand: false,filter: 'isFile'}
 				]
 			},
 			dev: {
 				files: [
-					{
-						src: 'bower_components/jquery/jquery.js',
-						dest: 'dist/jquery.js',
-						flatten: true,
-						expand: false,
-						filter: 'isFile'
-					},
-					{
-						src: 'src/costa-sansa.js',
-						dest: 'dist/',
-						flatten: true,
-						expand: true,
-						filter: 'isFile'
-					},
-					{
-						src: 'src/index.html',
-						dest: 'dist/',
-						flatten: true,
-						expand: true,
-						filter: 'isFile'
-					}
+					{src: 'src/costa-sansa.js',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'}
 				]
 			}
 		},
