@@ -1,5 +1,20 @@
 (function($) {
 
+$.mockjax({
+    url: '/Contact/List',
+    responseTime: 70,
+    responseText: $.mockJSON.generateFromTemplate({
+        "contacts|5-10": [{
+            "married|0-1": true,
+            "email" : "@EMAIL",
+            "firstName": "@MALE_FIRST_NAME",
+            "lastName": "@LAST_NAME",
+            "birthday": "@DATE_MM/@DATE_DD/@DATE_YYYY",
+            "percentHealth|0-100": 0 
+        }]
+    })
+});
+
 var grid,
     columns = [
         {id:"firstName", name:"First Name", field:"firstName", width:70},
