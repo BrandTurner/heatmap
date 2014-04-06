@@ -53,12 +53,22 @@ module.exports = function(grunt) {
 					}
 				]
 			}
+		},
+		watch: {
+			scripts: {
+				files: ['**/*.js'],
+				tasks: ['dev'],
+				options: {
+					spawn: false
+				}
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.registerTask('prod',['clean','uglify','copy:main','copy:prod']);
 	grunt.registerTask('dev',['clean','copy:main','copy:dev']);
 	grunt.registerTask('default',['dev']);
