@@ -1,0 +1,18 @@
+{
+  "name": "costa-sansa",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "john.saleigh@gmail.com",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-clean": "~0.5.0"
+  }
+}
