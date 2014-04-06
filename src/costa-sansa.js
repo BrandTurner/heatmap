@@ -77,12 +77,10 @@
             });
         }
 
-        buildMock('Alpha');
-        buildMock('Bravo');
-        buildMock('Charlie');
-        buildMock('Delta');
-        buildMock('Echo');
-        buildMock('Foxtrot');
+        $('.btn-data-choice').each(function(){
+            var name = $(this).data('choice') || 'global';
+            buildMock(name);
+        });
 
     }());
 
@@ -97,6 +95,7 @@
             editable: true,
             enableAddRow: false,
             enableCellNavigation: true,
+            multiColumnSort: true,
             enableCellReorder: true,
             rowCssClasses: function(item) {
                 return (item.percentVoted >= 80) ?  "healthy" : "";
@@ -171,10 +170,10 @@
     }())
 
 
-    loadList('Alpha');
+    loadList('global');
 
     $('.btn-data-choice').on('click',function(){
-        var name = $(this).data('choice') || 'Alpha';
+        var name = $(this).data('choice') || 'global';
         loadList(name);
     });
 
