@@ -12,5 +12,13 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "devDependencies": {
+    "slickgrid": "~2.1.0",
+    "jquery": "~2.1.0",
+    "jquery.event.drag-drop": "~2.2.1"
+  },
+  "resolutions": {
+    "jquery": "1.7.2"
+  }
 }
