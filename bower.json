@@ -18,7 +18,8 @@
     "jquery": "~2.1.0",
     "jquery.event.drag-drop": "~2.2.1",
     "jquery-ui": "~1.10.4",
-    "jquery-mockjax": "~1.5.3"
+    "jquery-mockjax": "~1.5.3",
+    "jquery.svg": "*"
   },
   "resolutions": {
     "jquery": "1.7.2"

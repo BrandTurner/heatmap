@@ -52,8 +52,11 @@
             }
         };
 
-    function renderContacts(contacts) {
-        grid = new Slick.Grid("#myGrid",  contacts, columns, options);        
+    function renderContacts(contacts, listName) {
+        grid = new Slick.Grid("#myGrid",  contacts, columns, options);
+        var svg = $('#data-map').svg('get');
+        var g = svg.getElementById(listName)
+        $(g).children().attr('fill','red');
     }
 
     function loadList(name) {        
@@ -62,13 +65,27 @@
             type: "GET",
             dataType: "json",
             success: function(data, textStatus, xhr) {
-                renderContacts(data.contacts);
+                renderContacts(data.contacts, name);
             },
             error: function(xhr, textStatus, errorThrown) {
                 console.log("Error: " + textStatus);
             }
         });
     }
+
+    (function(){
+        var svg = $('#data-map')
+            .svg()
+            .svg('get');
+        
+        svg.load('map.svg',{
+            addTo: true,
+            changeSize: false,
+            onLoad: function(svg, error) {
+            }
+        })
+    }())
+
 
     loadList('Alpha');
 
