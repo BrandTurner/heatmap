@@ -12,3 +12,15 @@ The next steps planned are:
 1. Animate the shading as the data sets change
 2. Interactivity by identifying clicked sub-elements
 3. Display zoomed-in views of sub-elementson selection
+
+Initial Setup
+-------------
+
+git clone https://github.com/jsaleigh/costa-sansa.git
+
+npm install
+
+bower install
+
+grunt
+
