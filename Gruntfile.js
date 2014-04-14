@@ -26,6 +26,7 @@ module.exports = function(grunt) {
 					{src: 'bower_components/slickgrid/slick.grid.css',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'},
 					{src: 'resources/map.svg',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'},
 					{src: 'src/costa-sansa.css',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'},
+					{src: 'src/us.json',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'},
 					{src: 'src/index.html',dest: 'dist/',flatten: true,expand: true,filter: 'isFile'}
 				]
 			},
