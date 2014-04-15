@@ -19,8 +19,8 @@ path {
  
 </style>
 <body>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://d3js.org/topojson.v1.js"></script>
 <script>
  
 var width = 960,
@@ -66,10 +66,11 @@ d3.json("us.json", function(error, us) {
  
   var bisectId = d3.bisector(function(d) { return d.id; }).left;
  
-  var features = topojson.feature(us, us.objects.states).features;
+  var features = topojson.feature(us, us.objects.states).features,
+  	mesh = topojson.mesh(us, us.objects.states);
  
   svg.append("path")
-      .datum(topojson.mesh(us, us.objects.states))
+      .datum(mesh)
       .attr("class", "background")
       .attr("d", path);
  
