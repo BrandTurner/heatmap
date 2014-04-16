@@ -1,4 +1,20 @@
-#data-map {
-	width: 300px;
-	height: 200px;
+path {
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+ 
+.background {
+  fill: none;
+  stroke: #ddd;
+}
+ 
+.foreground {
+  fill: none;
+  pointer-events: all;
+}
+ 
+.logo {
+    background: url(logo.png);
+    width: 156px;
+    height: 87px;
 }

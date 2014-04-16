@@ -1,181 +1,135 @@
-(function($) {
-    function GraphicalPercentCompleteCellFormatter(row, cell, value, columnDef, dataContext) {
-        return (value >>> 0) + "%";
-    };
+(function(options){
+  options = options || {};
 
-    function BoolCellFormatter(row, cell, value, columnDef, dataContext) {
-        return value ? "X" : "";
-    };
-
-    $.mockJSON.random = false;
-    $.mockJSON.data['STATE_NAME'] = [
-        "Alabama",
-        "Alaska",
-        "Arizona",
-        "Arkansas",
-        "California",
-        "Colorado",
-        "Connecticut",
-        "Delaware",
-        "Florida",
-        "Georgia",
-        "Hawaii",
-        "Idaho",
-        "Illinois",
-        "Indiana",
-        "Iowa",
-        "Kansas",
-        "Kentucky",
-        "Louisiana",
-        "Maine",
-        "Maryland",
-        "Massachusetts",
-        "Michigan",
-        "Minnesota",
-        "Mississippi",
-        "Missouri",
-        "Montana",
-        "Nebraska",
-        "Nevada",
-        "New Hampshire",
-        "New Jersey",
-        "New Mexico",
-        "New York",
-        "North Carolina",
-        "North Dakota",
-        "Ohio",
-        "Oklahoma",
-        "Oregon",
-        "Pennsylvania",
-        "Rhode Island",
-        "South Carolina",
-        "South Dakota",
-        "Tennessee",
-        "Texas",
-        "Utah",
-        "Vermont",
-        "Virginia",
-        "Washington",
-        "West Virginia",
-        "Wisconsin",
-        "Wyoming"
-    ];
-
-    (function(){
-        function buildMock(name) {
-            $.mockjax({
-                url: '/Contact/List/' + name,
-                responseTime: 100,
-                responseText: $.mockJSON.generateFromTemplate({
-                    "contacts|10-10": [{
-                        "active|0-1": true,
-                        "stateName": "@STATE_NAME",
-                        "addedDate": "@DATE_MM/@DATE_DD/@DATE_YYYY",
-                        "percentVoted|0-100": 0 
-                    }]
-                })
-            });
-        }
-
-        $('.btn-data-choice').each(function(){
-            var name = $(this).data('choice') || 'global';
-            buildMock(name);
-        });
-
-    }());
-
-    var grid,
-        columns = [
-            {id:"stateName", name:"First Name", field:"stateName"},
-            {id:"percentVoted", name:"% Voted", field:"percentVoted", formatter:GraphicalPercentCompleteCellFormatter},
-            {id:"addedDate", name:"Date", field:"addedDate"},
-            {id:"active", name:"Active", field:"active", formatter:BoolCellFormatter}
-        ],
-        options = {
-            editable: true,
-            enableAddRow: false,
-            enableCellNavigation: true,
-            multiColumnSort: true,
-            enableCellReorder: true,
-            rowCssClasses: function(item) {
-                return (item.percentVoted >= 80) ?  "healthy" : "";
-            }
-        };
-
-    function fillColorForContact(contact) {
-        var goal = {
-            red: 10,
-            green: 15,
-            blue: 200
-        };
-
-        function channel (top,bottom,percent) {
-            return (((top - bottom) * percent) + bottom) >>> 0;
-        }
-
-        var percent = contact.percentVoted / 100.0;
-        var red = channel(goal.red, 255, percent);
-        var green = channel(goal.green, 255, percent);
-        var blue = channel(goal.blue, 255, percent);
-
-        var channelRed = ("00" + red.toString(16)).slice(-2);
-        var channelGreen = ("00" + green.toString(16)).slice(-2);
-        var channelBlue = ("00" + blue.toString(16)).slice(-2);
-
-        var fill = "#"+channelRed+channelGreen+channelBlue;
-
-        console.log('color: (%o, %o, %o) - %o',red,green,blue,fill);
-
-        return fill;
-    }
-
-    function renderContacts(contacts, listName) {
-        grid = new Slick.Grid("#myGrid",  contacts, columns, options);
-        var svg = $('#data-map').svg('get'),
-            g, i, contact, fill;
-
-        for(i = 0; i < 10; i++) {
-            g = svg.getElementById('Layer_' + (i+1));
-            contact = contacts[i];
-            fill = fillColorForContact(contact) ;
-            $(g).children().attr('fill',fill);
-        }
-    }
-
-    function loadList(name) {        
-        $.ajax({
-            url: "/Contact/List/"+name,
-            type: "GET",
-            dataType: "json",
-            success: function(data, textStatus, xhr) {
-                renderContacts(data.contacts, name);
-            },
-            error: function(xhr, textStatus, errorThrown) {
-                console.log("Error: " + textStatus);
-            }
-        });
-    }
-
-    (function(){
-        var svg = $('#data-map')
-            .svg()
-            .svg('get');
-        
-        svg.load('map.svg',{
-            addTo: true,
-            changeSize: false,
-            onLoad: function(svg, error) {
-            }
-        })
-    }())
-
-
-    loadList('global');
-
-    $('.btn-data-choice').on('click',function(){
-        var name = $(this).data('choice') || 'global';
-        loadList(name);
+  var width  = options.width || 960,
+      height = options.height || 600,
+      scale  = options.scale || 1280;
+   
+  var projection = d3.geo.albersUsa()
+      .scale(scale)
+      .translate([width / 2, height / 2]);
+   
+  var path = d3.geo.path()
+      .projection(projection);
+   
+  var color = d3.scale.category10().domain(d3.range(9)),
+      selectedColor = 0,
+      dragColor;
+   
+  var components = color.domain().map(function() { return []; });
+   
+  var svg = d3.select(".map-container").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+   
+  var legend = svg.append("g")
+      .attr("class", "legend")
+      .attr("transform", "translate(" + ((width - color.domain().length * 24) / 2) + ",10)")
+      .style("cursor", "pointer")
+    .selectAll("rect")
+      .data(color.domain())
+    .enter().append("rect")
+      .attr("x", function(d) { return d * 24; })
+      .attr("width", 24 - 3)
+      .attr("height", 24 - 3)
+      .style("stroke", function(d) { return d ? null : "#000"; })
+      .style("fill", color)
+      .on("click", clicklegend);
+   
+  d3.select(self)
+      .on("keydown", keydown)
+      .node().focus();
+   
+  d3.json("us.json", function(error, us) {
+    if (error) return console.error(error);
+   
+    var bisectId = d3.bisector(function(d) { return d.id; }).left;
+   
+    var features = topojson.feature(us, us.objects.states).features,
+      mesh = topojson.mesh(us, us.objects.states);
+   
+    svg.append("path")
+        .datum(mesh)
+        .attr("class", "background")
+        .attr("d", path);
+   
+    var merge = svg.append("g")
+        .attr("class", "merge")
+      .selectAll("path")
+        .data(components)
+      .enter().append("path")
+        .style("fill", function(d, i) { return color(i); })
+        .style("stroke", function(d, i) { return d3.lab(color(i)).darker(); });
+   
+    svg.append("g")
+        .attr("class", "foreground")
+        .style("cursor", "pointer")
+        .style("stroke-opacity", .5)
+      .selectAll("path")
+        .data(features)
+      .enter().append("path")
+        .attr("d", function(d) { d.color = null; return path(d); })
+        .on("mouseover", function() { this.style.stroke = "black"; })
+        .on("mouseout", function() { this.style.stroke = "none"; })
+        .call(d3.behavior.drag()
+          .on("dragstart", dragstart)
+          .on("drag", drag));
+   
+    top.location.hash.split("").slice(1, features.length).forEach(function(c, i) {
+      if ((c = +c) >= 0 && c < 10) assign(features[i], c ? c - 1 : null);
     });
+   
+    redraw();
+   
+    function dragstart() {
+      var feature = d3.event.sourceEvent.target.__data__;
+      if (assign(feature, dragColor = feature.color === selectedColor ? null : selectedColor)) redraw();
+    }
+   
+    function drag() {
+      var feature = d3.event.sourceEvent.target.__data__;
+      if (feature && assign(feature, dragColor)) redraw();
+    }
+   
+    function assign(feature, color) {
+      if (feature.color === color) return false;
+      if (feature.color !== null) {
+        var component = components[feature.color];
+        component.splice(bisectId(component, feature.id), 1);
+        feature.color = null;
+      }
+      if (color !== null) {
+        var component = components[color];
+        component.splice(bisectId(component, feature.id), 0, feature);
+        feature.color = color;
+      }
+      return true;
+    }
+   
+    function redraw() {
+      merge.data(components).attr("d", function(d) { return path({type: "FeatureCollection", features: d}) || "M0,0"; });
+      top.history.replaceState(null, null, "#" + features.map(function(d) { return d.color === null ? "0" : d.color + 1; }).join(""));
+    }
+  });
+   
+  function clicklegend(d) {
+    legend[0][selectedColor].style.stroke = null;
+    legend[0][selectedColor = d].style.stroke = "#000";
+  }
+   
+  function keydown() {
+    if (d3.event.keyCode >= 48 && d3.event.keyCode < 58) {
+      var i = d3.event.keyCode - 49;
+      if (i < 0) i = 10;
+      clicklegend(i);
+    }
+  }
+   
+  d3.select(self.frameElement).style("height", height + "px");
 
-
-}(jQuery));
+  return svg;
+}({
+  width: 960,
+  height: 600,
+  scale: 1280
+}));
