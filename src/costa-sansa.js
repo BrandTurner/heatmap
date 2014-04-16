@@ -1,4 +1,4 @@
-(function(options){
+var CostaSansa = (function(options){
   options = options || {};
 
   var width  = options.width || 960,
@@ -127,9 +127,11 @@
    
   d3.select(self.frameElement).style("height", height + "px");
 
-  return svg;
+  return {
+    svg: svg
+  };
 }({
-  width: 960,
-  height: 600,
-  scale: 1280
+  width: 480,//960,
+  height: 400,//600,
+  scale: 640//1280
 }));
