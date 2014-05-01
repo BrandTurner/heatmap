@@ -33,7 +33,7 @@ var CostaSansa = (function(options){
       .attr("width", 24 - 3)
       .attr("height", 24 - 3)
       .style("stroke", function(d) { return d ? null : "#000"; })
-      .style("fill", color)
+      .style("fill", "black")
       .on("click", clicklegend);
    
   d3.select(self)
